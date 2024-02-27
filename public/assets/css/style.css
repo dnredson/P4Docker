@@ -1,0 +1,191 @@
+.navbar-light .navbar-brand {
+    color: #fff;
+    font-weight: bolder;
+}
+.title{
+  color: #fff;
+  font-weight: bolder;
+}
+.nav-item .nav-bar .nav-link{
+  color: #fff;
+}
+.navbar-toggler-icon::after {
+  content: '\2630'; /* Representa o ícone de menu hambúrguer */
+  font-size: 1.5em; /* Ajusta o tamanho do ícone */
+  color: white; /* Define a cor do ícone */
+}
+.item{
+  color: #fff;
+}
+.footer {
+    color: #fff;
+}
+#zoomInButton {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    z-index: 10;
+    width: 30px;
+    height: 30px;
+  }
+#zoomOutButton{
+    position: absolute;
+    top: 40px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    z-index: 10;
+    width: 30px;
+    height: 30px;
+  }
+
+  #SWEntries{
+    overflow-y:scroll;
+    height:200px;
+  }
+
+  .info-box {
+    position: relative;
+    right: 0;
+    top: 0;
+    width: 100%; /* Adjust as needed */
+    height: auto;
+    overflow-y: auto;
+    background: #fff;
+    border-left: 1px solid #ddd;
+    
+    padding: 0px;
+    padding-left: 10px;
+    box-sizing: border-box;
+  }
+  
+  .tbl-container {
+  width: 400px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.bg-red {
+  background-color: red;
+  color: white;
+  -moz-border-radius: 0px;
+-webkit-border-radius: 6px 6px 0px 0px;
+border-radius: 6px 6px 0px 0px; 
+  padding: 5px;
+}
+
+.bg-blue {
+    background-color: blue;
+    color: white;
+    -moz-border-radius: 0px;
+  -webkit-border-radius: 6px 6px 0px 0px;
+  border-radius: 6px 6px 0px 0px; 
+    padding: 5px;
+  }
+  
+.bg-green {
+    background-color: green;
+    color: white;
+    -moz-border-radius: 0px;
+  -webkit-border-radius: 6px 6px 0px 0px;
+  border-radius: 6px 6px 0px 0px; 
+    padding: 5px;
+  }
+.rowInfo{
+    background-color: white;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 5px;
+}
+.bdr {
+  border-radius: 6px;
+  overflow: hidden;
+}
+.infoTable{
+    width:100%;
+}
+* { margin: 0; padding: 0; }
+.terminal {
+    border-radius: 5px 5px 0 0;
+    position: relative;
+}
+.terminal .top {
+    background: #28292B;
+    color: black;
+    padding: 5px;
+    border-radius: 5px 5px 0 0;
+}
+.terminal .btns {
+    position: absolute;
+    top: 7px;
+    left: 5px;
+}
+.terminal .circle {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 15px;
+    margin-left: 2px;
+    border-width: 1px;
+    border-style: solid;
+}
+.title{
+    text-align: center;
+}
+.red { background: #EC6A5F; border-color: #D04E42; }
+.green { background: #64CC57; border-color: #4EA73B; }
+.yellow{ background: #F5C04F; border-color: #D6A13D; }
+.clear{clear: both;}
+.terminal .body {
+    background: black;
+    color: #7AFB4C;
+    padding: 8px;
+    overflow: auto;
+}
+.space {
+    margin: 25px;
+}
+.shadow { box-shadow: 0px 0px 10px rgba(0,0,0,.4)}
+
+
+
+.editor {
+  display: inline-flex;
+  gap: 10px;
+  font-family: monospace;
+  line-height: 21px;
+  background: #282a3a;
+  border-radius: 2px;
+  width: 100%;
+  
+  overflow-y: scroll;
+  height: auto;
+  min-height: 400px;
+  overflow: auto;
+}
+
+.line-numbers {
+  width: 20px;
+  text-align: right;
+}
+
+.line-numbers span {
+  counter-increment:  linenumber;
+}
+
+.line-numbers span::before {
+  content: counter(linenumber);
+  display: block;
+  color: #506882;
+}
+
+textarea {
+  line-height: 21px;
+  overflow-y: hidden;
+  padding: 1px 0;
+  border: 0;
+  background: #282a3a;
+  color: #FFF;
+  width: 100%;
+  outline: none;
+  resize: none;
+}

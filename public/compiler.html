@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P4-DOCKER</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+  
+ 
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-info">
+    <a class="navbar-brand" href="#">
+      <img src="./assets/images/logo.png" width="50" height="50" alt="">
+      P4-DOCKER
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/compiler">Compiler</a>
+          </li>
+         
+        </ul>
+      </div>
+  </nav>
+  <!-- Alert container -->
+<div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+<div style="padding: 20px">
+    <!-- Botões de manipulação do grafo -->
+   
+
+    <!-- Instância dos modais-->
+   
+    <!-- Fim dos modais-->
+</div>
+    <!-- Área do cytoscape -->
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6" >
+            <form id="compilerForm">
+                <table>
+                    <tr>
+                        <td style="padding-right: 30px;">Title: <input type="text" id="title" class="form-control"><br></td>
+                        <td><button id="compileButton" class="btn btn-primary ">Compile</button></td>
+                    </tr>
+                </table>
+                
+                Code:<br>
+                <div class="editor">
+                    <div class="line-numbers">
+                      <span></span>
+                    </div>
+                    <textarea  id="code"></textarea>
+                    
+                  </div>
+                  <br>
+                
+            </form>
+            <br>
+            
+        </div>
+        <div class="col-md-6" id=>
+            
+            <div class="terminal space shadow">
+                
+                <div class="top">
+                    <div class="btns">
+                        <span class="circle red"></span>
+                        <span class="circle yellow"></span>
+                        <span class="circle green"></span>
+                    </div>
+                    <div class="title">Output</div>
+                </div>
+                <pre class="body">
+                    <div id="output" class="terminal"></div>
+                </pre>
+            </div>
+         
+        </div>
+    </div>
+  </div>
+  
+  
+
+    <!-- Área do cytoscape -->
+  
+  <footer class="bg-info text-center text-lg-start footer">
+    <div class="text-center p-3">
+     PROFISSA © 2024
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+ 
+  <script>
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip({ html: true });
+    });
+  </script>
+  
+   
+<script>
+    document.getElementById('compilerForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    compileCode();
+});
+ function compileCode() {
+    console.log("Compiling code")
+    
+    var title = document.getElementById('title').value;
+    var code = document.getElementById('code').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/compiler', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            document.getElementById('title').value = response.title;
+            document.getElementById('code').value = response.code;
+
+            if (response.success) {
+                document.getElementById('output').innerText = "Código compilado com sucesso";
+            } else {
+                document.getElementById('output').innerText = response.error || "Ocorreu um erro";
+            }
+        }
+    };
+
+    xhr.send(JSON.stringify({ title: title, code: code }));
+}
+
+</script>  
+<script>
+    const textarea = document.querySelector('textarea')
+const lineNumbers = document.querySelector('.line-numbers')
+const editor = document.querySelector('.editor')
+
+textarea.addEventListener('keyup', event => {
+  const numberOfLines = event.target.value.split('\n').length
+  lineNumbers.innerHTML = Array(numberOfLines).fill('<span></span>').join('')
+  //var scroll = (textarea.scrollTop + textarea.offsetHeight) / textarea.scrollHeight * 100
+  /* NOTE: This doesnt work */
+  textarea.scrollTop = 0
+  textarea.offsetHeight = 0
+  editor.scrollTop = textarea.scrollTop
+  editor.offsetHeight = textarea.offsetHeight
+
+})
+</script>
+</body>
+</html>
