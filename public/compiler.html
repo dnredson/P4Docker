@@ -85,7 +85,7 @@
                     <div id="output" class="terminal"></div>
                 </pre>
             </div>
-         
+            <button id="downloadBtn">Download Compiled File</button>
         </div>
     </div>
   </div>
@@ -104,7 +104,16 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
- 
+  <script>
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        var title = document.getElementById('titleInput').value; 
+        if (title) {
+            window.location.href = `/download/${title}`; 
+        } else {
+            alert('You must provide a title, content and compile yout file before the Download');
+        }
+    });
+    </script>
   <script>
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip({ html: true });
@@ -133,9 +142,9 @@
             document.getElementById('code').value = response.code;
 
             if (response.success) {
-                document.getElementById('output').innerText = "Código compilado com sucesso";
+                document.getElementById('output').innerText = "Code Compiled";
             } else {
-                document.getElementById('output').innerText = response.error || "Ocorreu um erro";
+                document.getElementById('output').innerText = response.error || "Error";
             }
         }
     };

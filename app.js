@@ -1,20 +1,12 @@
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
-const app = express();  // Make sure this line is before any app.use() calls
+const app = express();
 
-// Add other required modules
-const livereload = require('livereload');
-const connectLivereload = require('connect-livereload');
 
-// LiveReload configuration
-const liveReloadServer = livereload.createServer();
-liveReloadServer.watch(__dirname + "/public");
 
-const liveReloadMiddleware = connectLivereload();
-app.use(liveReloadMiddleware); // Now 'app' is defined before use
 app.use(express.json());
-// Express app configuration
+
 const port = 3000;
 app.use(express.static('public'));
 
@@ -49,6 +41,17 @@ app.post('/compiler', (req, res) => {
       }
   });
 });
+app.get('/download/:title', (req, res) => {
+  const title = req.params.title;
+  const filePath = `/var/lib/docker/volumes/shared/_data/${title}.json`; // Atualize este caminho conforme necessário
+  res.download(filePath, `${title}.json`, (err) => {
+      if (err) {
+          
+          res.status(500).send("Error trying to Download the file");
+      }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
