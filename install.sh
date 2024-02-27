@@ -2,6 +2,7 @@
 
  echo "Running P4D-GUI Installer..."
 # Update
+echo "Update"
 sudo apt-get update
 
 # Install Docker if not installed yet
@@ -15,12 +16,20 @@ if ! [ -x "$(command -v git)" ]; then
   echo 'Git not found. Installing Git...'
   sudo apt-get install -y git
 fi
+# Install CURL if not installed yet
+if ! [ -x "$(command -v curl)" ]; then
+  echo 'CURL not found. Installing CURL...'
+  sudo apt-get install -y curl
+fi
 
 # Install Nodejs and Npm if not installed yet
 if ! [ -x "$(command -v node)" ]; then
   echo 'Node.js and NPM not found. Installing Node.js and NPM...'
- curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&\
-  sudo apt-get install -y nodejs npm
+ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - &&\
+ sudo apt-get update
+ sudo apt-get install -y nodejs
+  
+  
 fi
 
 # Clone the project from GitHub

@@ -1016,7 +1016,7 @@ function displayCyData() {
       console.log("Começando captura")
       switches2.forEach(function(sw) {
           console.log('Switch:', sw.id());
-  
+          
           var childNodes = sw.descendants();
 
           // Ordena os nós filhos com base na posição x
@@ -1049,7 +1049,7 @@ function displayCyData() {
           portsConfig = portsConfig +" -i "+ i+ "@" + port;
         });
         
-        
+        startContainers = startContainers + "docker exec "+sw.name +" sh -c 'echo 0 >> /proc/sys/net/ipv4/ip_forward'";
 
         startContainers = startContainers +"docker exec "+sw.name +" sh -c 'nohup simple_switch  --thrift-port "+sw.port+" "+portsConfig+" "+sw.code +" --log-console >> /tmp/switch.log &' \n";
         
