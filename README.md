@@ -33,8 +33,8 @@ Execution:
 
   Access the P4D-GUI folder
   
-  Start the server:
+  Start the server with sudo permissions, since Docker commands require sudo:
   
-     node app.js
+     sudo node app.js
 
   Open the GUI at localhost:3000 with your browser
