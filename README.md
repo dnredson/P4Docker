@@ -23,10 +23,11 @@ Installation:
   
   Give permisson for execution to the script
   
-    ``` chmod +x install.sh
+     chmod +x install.sh
   
   Execute the install.sh file, the file will automatically install the requisites and clone this repository
-    ``` ./install.sh
+  
+    ./install.sh
 
 Execution:
 
@@ -34,6 +35,6 @@ Execution:
   
   Start the server:
   
-    ``` node app.js
+     node app.js
 
   Open the GUI at localhost:3000 with your browser
