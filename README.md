@@ -1,19 +1,4 @@
-██████  ██   ██ ██████                 ██████  ██    ██ ██ 
-
-
-██   ██ ██   ██ ██   ██               ██       ██    ██ ██ 
-
-
-██████  ███████ ██   ██     █████     ██   ███ ██    ██ ██ 
-
-
-██           ██ ██   ██               ██    ██ ██    ██ ██ 
-
-
-██           ██ ██████                 ██████   ██████  ██ 
-                                                           
-                                               
-                                               
+                                             
 
 The P4D-GUI is a tool that allows the creation of P4 testbeds using Docker hosts with a BMV2 P4 switch executed in Docker.
 
