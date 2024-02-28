@@ -1049,7 +1049,7 @@ function displayCyData() {
           portsConfig = portsConfig +" -i "+ i+ "@" + port;
         });
         
-        startContainers = startContainers + "docker exec "+sw.name +" sh -c 'echo 0 >> /proc/sys/net/ipv4/ip_forward'";
+        startContainers = startContainers + "docker exec "+sw.name +" sh -c 'echo 0 >> /proc/sys/net/ipv4/ip_forward' \n";
 
         startContainers = startContainers +"docker exec "+sw.name +" sh -c 'nohup simple_switch  --thrift-port "+sw.port+" "+portsConfig+" "+sw.code +" --log-console >> /tmp/switch.log &' \n";
         
