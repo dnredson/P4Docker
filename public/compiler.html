@@ -85,7 +85,7 @@
                     <div id="output" class="terminal"></div>
                 </pre>
             </div>
-            <button id="downloadBtn">Download Compiled File</button>
+            <button id="downloadBtn"  class="btn btn-primary">Download Compiled File</button>
         </div>
     </div>
   </div>
@@ -108,7 +108,7 @@
     document.getElementById('downloadBtn').addEventListener('click', function() {
         var title = document.getElementById('title').value; 
         if (title) {
-            window.location.href = `/download/${title}`; 
+            window.location.href = `/download?title=${title}`; 
         } else {
             alert('You must provide a title, content and compile yout file before the Download');
         }

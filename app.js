@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 app.get('/compiler', (req, res) => {
-  res.sendFile(__dirname + '/public/compiler.html'); // Adjust the file path as necessary
+  res.sendFile(__dirname + '/public/compiler.html'); 
 });
 
 app.post('/compiler', (req, res) => {
@@ -41,9 +41,13 @@ app.post('/compiler', (req, res) => {
       }
   });
 });
-app.get('/download/:title', (req, res) => {
-  const title = req.params.title;
-  const filePath = `/var/lib/docker/volumes/shared/_data/codes/${title}.json`; 
+app.get('/download', (req, res) => {
+    const title = req.query.title; 
+    if (!title) {
+        return res.status(400).send("File not specified.");
+    }
+  const filePath = `/var/lib/docker/volumes/shared/_data/${title}.json`; 
+  console.log(filePath);
   res.download(filePath, `${title}.json`, (err) => {
       if (err) {
           
