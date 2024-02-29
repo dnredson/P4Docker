@@ -566,7 +566,7 @@ cy.center();
       'name': name,
       'image': image,
       'label': combinedLabel,
-      'off': off
+      
     });
     
     cy.style(cyStyle).update();
@@ -630,22 +630,26 @@ cy.center();
   
   document.getElementById('saveEdge').addEventListener('click', function() {
     var sourceChildId = document.getElementById('sourceChildDropdown').value;
+    var sourceParentId = document.getElementById('sourceParentDropdown').value;
     var targetChildId = document.getElementById('targetChildDropdown').value;
+    var targetParentId = document.getElementById('targetParentDropdown').value;
     var sourceIp = document.getElementById('sourceIp').value;
     var sourceMac = document.getElementById('sourceMac').value;
     var targetIp = document.getElementById('targetIp').value;
     var targetMac = document.getElementById('targetMac').value;
     var customEdge = document.getElementById('customEdge').value;
     var delay = document.getElementById('delay').value;
-    var bandwitdh = document.getElementById('bandwidth').value;
-  
+    var bandwidth = document.getElementById('bandwidth').value;
+    
     // Create the edge
-    var selectedNode = cy.$('sourceChildId');
-    console.log(selectedNode);
+    var selectedNode = cy.$(sourceParentId);
+    
+    
+    
     var interfaceName = sourceChildId+'-'+targetChildId;
     cy.add({
       group: 'edges',
-      data: { source: sourceChildId, target: targetChildId, interface: interfaceName, customEdge: customEdge, delay: delay, bandwitdh: bandwitdh },
+      data: { source: sourceChildId, target: targetChildId, interface: interfaceName, customEdge: customEdge, delay: delay, bandwidth: bandwidth, parentSource: sourceParentId, parentTarget: targetParentId , sourceIp: sourceIp, targetIp: targetIp },
     });
   
     // Update the IP and MAC addresses of the source and target nodes
@@ -882,11 +886,54 @@ function displayCyData() {
     });
     startContainers = startContainers+'\n \n echo "Configurando os Namespaces" \n '; 
     // Cria os namespaces e atribui para cada container
+    var listDelays = [];
     edges.forEach(function(edge) {
       var firstHost = edge["source"].split('-')[0];
       var secondHost = edge["target"].split('-')[0];
       var portNameFirstHost = edge["source"]+"-"+edge["target"];
       var portNameSecondHost = edge["target"]+"-"+edge["source"];
+      var delay = edge["delay"];
+      var bandwidth = edge["bandwidth"];
+      var customEdge = edge["customEdge"];
+      var interface = edge["interface"];
+      var firstNodeData = cy.elements('node[name="' + firstHost + '"]');
+      var secondNodeData = cy.elements('node[name="' + secondHost + '"]');
+
+      
+      
+      
+
+      if (firstNodeData[0]["_private"]["data"]["type"] == "Switch"){
+        
+        if(customEdge){
+          console.log("Está marcado para customEdge");
+          if(bandwidth != '' && bandwidth != null && bandwidth != undefined){
+        
+            listDelays.push("sudo nsenter -t $PID"+firstHost+" -n tc qdisc add dev "+interface+" root netem delay "+delay+ "ms rate "+bandwidth);
+          }else{
+        
+            listDelays.push("sudo nsenter -t $PID"+firstHost+" -n tc qdisc add dev "+interface+" root netem delay "+delay);
+          }
+          
+          
+        }
+      }
+      if (secondNodeData[0]["_private"]["data"]["type"] == "Switch"){
+        
+        if(customEdge){
+        
+          if(bandwidth != '' && bandwidth != null && bandwidth != undefined){
+           
+            listDelays.push("sudo nsenter -t $PID"+secondNodeData[0]["_private"]["data"]["name"]+" -n tc qdisc add dev "+portNameSecondHost+" root netem delay "+delay+ "ms rate "+bandwidth);
+          }else{
+           
+            listDelays.push("sudo nsenter -t $PID"+secondNodeData[0]["_private"]["data"]["name"]+" -n tc qdisc add dev "+portNameSecondHost+" root netem delay "+delay);
+          }
+          
+          
+        }
+      }
+  
       var configSource ;
       var configTarget;
       startContainers = startContainers + "sudo ip link set "+ portNameFirstHost+" netns $PID"+firstHost +" \n" ;
@@ -962,31 +1009,32 @@ function displayCyData() {
     startContainers = startContainers+'\n \n echo "Configurando Rota Padrão nos hosts (Valide no código suas rotas desejadas) " \n '; 
     startContainers = startContainers+'\n \n echo "Por padrão, o código irá configurar o gateway de um host como a porta do switch ao qual está conectado" \n '; 
     startContainers = startContainers + "# Por padrão, o código irá configurar o gateway de um host como a porta do switch ao qual está conectado \n"
-    startContainers = startContainers + "# Altere estas linhas pare definir suas rotas da maneira que desejar \n"
+    startContainers = startContainers + "# Altere estas linhas pare definir suas rotas da maneira que desejar \n" ;
     edges.forEach(function(edge) {
-      var firstHost = edge["source"].split('-')[0];
-      var secondHost = edge["target"].split('-')[0];
-      var portNameFirstHost = edge["source"]+"-"+edge["target"];
-      var portNameSecondHost = edge["target"]+"-"+edge["source"];
-
-      listPorts.forEach(function(portSource) {
-        listNodes.forEach(function(node) {
-          
-            if(portSource["data"].parent == node["name"]){
-              if(portSource["data"].name == edge["source"]){
-                listPorts.forEach(function(portTarget) {
-          
-                  if(portTarget["data"].name == edge["target"]){
-                    
-                    startContainers = startContainers +"docker exec "+ portSource["data"].parent +" route add default gw "+ portTarget["data"].ip.split('/')[0]+" \n";
-                  }
-                });  
-                
-              }
-            }
-        });
+      //"docker exec h1 route add default gw ip-sw-port"
+      if(edge.customEdge){
        
-      });  
+        var parentSource = cy.$( `node[name="${edge.parentSource}"]`);
+        var parentTarget = cy.$( `node[name="${edge.parentTarget}"]`);
+        var command = "";
+        console.log("Completo")
+       console.log(edge);
+       console.log("Acesso direto")
+       console.log(edge.parentTarget);
+       console.log("Acesso com aspas")
+       console.log(edge["parentTarget"])
+        if(parentSource[0]["_private"]["data"]["type"] == "Switch"){
+          command = "docker exec "+edge.parentTarget+" route add default gw "+edge.sourceIp.split('/')[0]; +" \n";
+        }
+        if(parentTarget[0]["_private"]["data"]["type"]  == "Switch"){
+          
+          command =  "docker exec "+edge.parentSource+" route add default gw "+edge.targetIp.split('/')[0]; +" \n";
+        }
+        console.log(command);
+        startContainers = startContainers + command + "\n "         ;
+      }
+      
+       
             
     });
     
@@ -1064,12 +1112,20 @@ function displayCyData() {
         if(command !=""){
           
         
-        if (command.length > 3){
+        if (command.length > 0){
           startContainers = startContainers +`docker exec ${sw.name} sh -c 'echo "${command}" | simple_switch_CLI --thrift-port ${sw.port}'  \n`; 
         }
         
         }
         });
+        
+        if(listDelays.length > 0){
+          startContainers = startContainers+ ' echo "Configurando delays e bandwith " \n';
+          listDelays.forEach( function(entry){
+            startContainers = startContainers + entry + " \n"
+          });
+
+        }
     });
 
     //docker exec sw1 sh -c 'nohup simple_switch  --thrift-port 50001 -i 1@veth1 -i 2@veth3  standard.json &'

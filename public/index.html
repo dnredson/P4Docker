@@ -265,17 +265,17 @@
               <input type="text" class="form-control" id="targetMac" placeholder="00:00:00:00:00:00" required>
             </div>
             <div class="form-group">
-              <input type="checkbox" id="customEdge" name="customEdge">
+              <input type="checkbox" id="customEdge" name="customEdge" value="false">
               <label for="customEdge">Define bandwidth and delay</label>
           </div>
           <div id="conditional-fields" style="display:none;">
             <div class="form-group">
                 <label for="bandwidth">Bandwidth:</label>
-                <input type="text" class="form-control" id="bandwidth" placeholder="50kbit;5mbit" >
+                <input type="text" class="form-control" id="bandwidth" placeholder="50kbit;5mbit (0 for empty)" >
             </div>
             <div class="form-group">
-                <label for="delay">Delay :</label>
-                <input type="text" class="form-control" id="delay" placeholder="time in ms" value="0" >
+                <label for="delay">Delay:</label>
+                <input type="text" class="form-control" id="delay" placeholder="time in ms (0 for empty)" >
             </div>
         </div>
           </form>
@@ -384,7 +384,7 @@
         </div>
         <div class="col-md-4" id=>
             Info:
-            <div id="info-box" class="info-box">here</div>
+            <div id="info-box" class="info-box"></div>
         </div>
     </div>
   </div>
