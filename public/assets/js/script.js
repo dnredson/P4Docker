@@ -1056,7 +1056,7 @@ function displayCyData() {
           portsConfig = portsConfig +" -i "+ i+ "@" + port;
         });
         
-        startContainers = startContainers + "docker exec "+sw.name +" sh -c 'echo 0 >> /proc/sys/net/ipv4/ip_forward'";
+        startContainers = startContainers + "docker exec "+sw.name +" sh -c 'echo 0 >> /proc/sys/net/ipv4/ip_forward' \n";
 
         startContainers = startContainers +"docker exec "+sw.name +" sh -c 'nohup simple_switch  --thrift-port "+sw.port+" "+portsConfig+" "+sw.code +" --log-console >> /tmp/switch.log &' \n";
         
@@ -1149,7 +1149,7 @@ function displayDeleteCode (){
   scriptLimpeza = scriptLimpeza+'        sudo ip link del $veth 2>/dev/null \n';
   scriptLimpeza = scriptLimpeza+"    fi \n";
   scriptLimpeza = scriptLimpeza+"done \n";  
-  scriptLimpeza = scriptLimpeza+'echo "Environment Cleaned!'
+  scriptLimpeza = scriptLimpeza+'echo "Environment Cleaned!"'
   
 
 
