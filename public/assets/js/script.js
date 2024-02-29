@@ -312,6 +312,7 @@ const cyStyle = [
       {
         selector: 'node[type = "Switch"]',
         style: {
+          'shape': 'rectangle',
           'label': 'data(label)',
           'border-color': 'green',
 
@@ -634,11 +635,17 @@ cy.center();
     var sourceMac = document.getElementById('sourceMac').value;
     var targetIp = document.getElementById('targetIp').value;
     var targetMac = document.getElementById('targetMac').value;
+    var customEdge = document.getElementById('customEdge').value;
+    var delay = document.getElementById('delay').value;
+    var bandwitdh = document.getElementById('bandwidth').value;
   
     // Create the edge
+    var selectedNode = cy.$('sourceChildId');
+    console.log(selectedNode);
+    var interfaceName = sourceChildId+'-'+targetChildId;
     cy.add({
       group: 'edges',
-      data: { source: sourceChildId, target: targetChildId }
+      data: { source: sourceChildId, target: targetChildId, interface: interfaceName, customEdge: customEdge, delay: delay, bandwitdh: bandwitdh },
     });
   
     // Update the IP and MAC addresses of the source and target nodes
@@ -1073,7 +1080,7 @@ function displayCyData() {
     //Adiciona regras via API do BMv2
     //docker exec sw1 sh -c 'echo "table_add MyIngress.ipv4_lpm ipv4_forward 10.0.1.2  => 00:00:00:00:01:02 1" | simple_switch_CLI --thrift-port 50001'
     //docker exec sw1 sh -c 'echo "table_add MyIngress.ipv4_lpm ipv4_forward 10.0.2.2 =>  00:00:00:00:02:02 2" | simple_switch_CLI --thrift-port 50001'
-    
+  
   
   document.getElementById('cyDataTextarea').value = startContainers;
   $('#dataDisplayModal').modal('show');
