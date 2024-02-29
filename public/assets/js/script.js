@@ -1142,7 +1142,7 @@ function displayDeleteCode (){
   scriptLimpeza = scriptLimpeza+'        sudo ip link del $veth 2>/dev/null \n';
   scriptLimpeza = scriptLimpeza+"    fi \n";
   scriptLimpeza = scriptLimpeza+"done \n";  
-  scriptLimpeza = scriptLimpeza+'echo "Environment Cleaned!'
+  scriptLimpeza = scriptLimpeza+'echo "Environment Cleaned!"'
   
 
 
