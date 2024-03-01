@@ -43,26 +43,26 @@ document.addEventListener("DOMContentLoaded", function () {
   removeNodeButton.addEventListener('click', function () {
     var selectedNode = cy.$(':selected');
     var connectedEdges = selectedNode.connectedEdges();
-    console.log(listPorts)
+    
     if (selectedNode.length > 0) {
-      console.log(">0")
+      
       if ( selectedNode.isParent()) {
-        console.log(" is Parent")
+        
         var children = selectedNode.children();
         children.forEach(function (child) {
           cy.remove(child);
           child.connectedEdges().forEach(function (edge){
             cy.remove(edge);
-            console.log(listPorts)
+            
             listPorts.find(child).remove();
-            console.log(listPorts)
+            
           });
         });
       }
       
       cy.remove(connectedEdges);
       cy.remove(selectedNode);
-      console.log(listPorts)
+      
       
     
     }else{
@@ -75,7 +75,7 @@ removeEdgeButton.addEventListener('click', function() {
   var selectedEdge = cy.$('edge:selected');
   if (selectedEdge.length > 0) {
       cy.remove(selectedEdge);
-      console.log(selectedEdge);
+      
   } else {
       showAlert("No edge selected", "danger");
   }
@@ -637,7 +637,7 @@ cy.center();
     var sourceMac = document.getElementById('sourceMac').value;
     var targetIp = document.getElementById('targetIp').value;
     var targetMac = document.getElementById('targetMac').value;
-    var customEdge = document.getElementById('customEdge').value;
+    var customEdge = document.getElementById('customEdge').checked;
     var delay = document.getElementById('delay').value;
     var bandwidth = document.getElementById('bandwidth').value;
     
@@ -649,7 +649,7 @@ cy.center();
     var interfaceName = sourceChildId+'-'+targetChildId;
     cy.add({
       group: 'edges',
-      data: { source: sourceChildId, target: targetChildId, interface: interfaceName, customEdge: customEdge, delay: delay, bandwidth: bandwidth, parentSource: sourceParentId, parentTarget: targetParentId , sourceIp: sourceIp, targetIp: targetIp },
+      data: { source: sourceChildId, target: targetChildId, interface: interfaceName, customEdge: customEdge, delay: delay, bandwidth: bandwidth, parentSource: sourceParentId, parentTarget: targetParentId , sourceIp: sourceIp, targetIp: targetIp, sourceMac: sourceMac, targetMac: targetMac },
     });
   
     // Update the IP and MAC addresses of the source and target nodes
@@ -678,7 +678,10 @@ cy.on('select', 'node', function(event) {
   var node = event.target;
   displayNodeInfo(node);
 });
-
+cy.on('select', 'edge', function(event) {
+  var edge = event.target;
+ displayEdgeInfo(edge);
+});
 function displayNodeInfo(node) {
   var infoBox = document.getElementById('info-box');
   var htmlContent = '';
@@ -719,7 +722,22 @@ var targetNodeData = cy.getElementById(targetNode).data();
 
   infoBox.innerHTML = htmlContent;
 }
-
+function displayEdgeInfo(edge) {
+  var infoBox = document.getElementById('info-box');
+  var htmlContent = '';
+  
+  
+  var edgeData = edge[0]["_private"]["data"];
+  
+  if(edgeData.customEdge){
+    htmlContent = `<div class="infoTable"><div class="bg-blue">Edge Info</div><div class="rowInfo"> Source: ${edgeData.source} </br> Source IP: ${edgeData.sourceIp}  </div><div class="rowInfo"> Target: ${edgeData.target} </br> Target IP: ${edgeData.targetIp}</div></div>`;
+  }else{
+    htmlContent = `<div class="infoTable"><div class="bg-blue">Edge Info</div><div class="rowInfo"> Source: ${edgeData.source} </br> Source IP: ${edgeData.sourceIp}  </div><div class="rowInfo"> Target: ${edgeData.target} </br> Target IP: ${edgeData.targetIp}</div><div class="rowInfo">Delay:${edgeData.delay} </div><div class="rowInfo">Bandwidth:${edgeData.bandwidth} </div></div>`;
+  }
+  
+    
+  infoBox.innerHTML = htmlContent;
+}
 //Import and export functions
 
 // Function to export the topology to JSON
@@ -744,8 +762,12 @@ document.getElementById('copyToClipboard').addEventListener('click', function() 
 document.getElementById('downloadJson').addEventListener('click', function() {
   var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cy.json(), null, 2));
   var downloadAnchorNode = document.createElement('a');
+  var projectName = document.getElementById('projectName').value
+  if(projectName == "" || projectName == null){
+    projectName = "topology";
+  }
   downloadAnchorNode.setAttribute("href",     dataStr);
-  downloadAnchorNode.setAttribute("download", "topology.json");
+  downloadAnchorNode.setAttribute("download", projectName +"Topology.json");
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
@@ -813,17 +835,14 @@ function displayCyData() {
     nodes: nodes,
     edges: edges
   };
-  console.log("Data");
-  console.log(nodes);
-  console.log("Edge");
-  console.log(edges);
+  
   //Inicia o arquivo
  
   startContainers =  "";
   startContainers = startContainers +"#!/bin/bash \n";
   // Carrega as informações e inicia os containers docker
   nodes.forEach(function(node) {
-    console.log("Tipo do node: "+node)
+    
     if(node["data"]["type"] == "Host"){
       startContainers = startContainers+'\n \n echo "Start Host Container '+ node["data"]["name"]  +'" \n '; 
       var docker= 'docker run -itd --name '+ node["data"]["name"] +' --network="none" --privileged -v shared:/codes --workdir /codes '+ node["data"]["image"];
@@ -868,16 +887,17 @@ function displayCyData() {
      
     //Variáveis com os PIDs de cada elemento
     startContainers = startContainers+' \n \n echo "Capturando o PID de cada container para adicionar ao namespace"\n '; 
-     listNodes.forEach(function(node) {
-      startContainers = startContainers + "PID"+node.name +"=$(docker inspect -f '{{.State.Pid}}' "+node.name+") \n";
+    listNodes.forEach(function(node) {
+     startContainers = startContainers + "PID"+node.name +"=$(docker inspect -f '{{.State.Pid}}' "+node.name+") \n";
 
-     });
+    });
+   
+    listSwitches.forEach(function(node) {
+     startContainers = startContainers + "PID"+node.name +"=$(docker inspect -f '{{.State.Pid}}' "+node.name+") \n";
+
+    });
+
     
-     listSwitches.forEach(function(node) {
-      startContainers = startContainers + "PID"+node.name +"=$(docker inspect -f '{{.State.Pid}}' "+node.name+") \n";
-
-     });
-
 
      // Cria os VETH peers
      startContainers = startContainers+'\n \n echo "Crianco VETH Peers"\n '; 
@@ -898,15 +918,12 @@ function displayCyData() {
       var interface = edge["interface"];
       var firstNodeData = cy.elements('node[name="' + firstHost + '"]');
       var secondNodeData = cy.elements('node[name="' + secondHost + '"]');
-
       
-      
-      
-
+     if(customEdge){
       if (firstNodeData[0]["_private"]["data"]["type"] == "Switch"){
         
-        if(customEdge){
-          console.log("Está marcado para customEdge");
+        
+          
           if(bandwidth != '' && bandwidth != null && bandwidth != undefined){
         
             listDelays.push("sudo nsenter -t $PID"+firstHost+" -n tc qdisc add dev "+interface+" root netem delay "+delay+ "ms rate "+bandwidth);
@@ -916,12 +933,11 @@ function displayCyData() {
           }
           
           
-        }
+        
       }
       if (secondNodeData[0]["_private"]["data"]["type"] == "Switch"){
         
-        if(customEdge){
-        
+                
           if(bandwidth != '' && bandwidth != null && bandwidth != undefined){
            
             listDelays.push("sudo nsenter -t $PID"+secondNodeData[0]["_private"]["data"]["name"]+" -n tc qdisc add dev "+portNameSecondHost+" root netem delay "+delay+ "ms rate "+bandwidth);
@@ -931,48 +947,33 @@ function displayCyData() {
           }
           
           
-        }
+        
       }
-  
       var configSource ;
       var configTarget;
-      startContainers = startContainers + "sudo ip link set "+ portNameFirstHost+" netns $PID"+firstHost +" \n" ;
-      startContainers = startContainers + "sudo ip link set "+ portNameSecondHost+" netns $PID"+ secondHost+" \n" ;
+    
+     }
+      
+     startContainers = startContainers + "sudo ip link set "+ portNameFirstHost+" netns $PID"+firstHost +" \n" ;
+    startContainers = startContainers + "sudo ip link set "+ portNameSecondHost+" netns $PID"+ secondHost+" \n" ;
+  
+      
       
     });
+    
     // Configura as interfaces de rede
     startContainers = startContainers+'\n \n echo "Configurando interfaces de rede" \n '; 
     edges.forEach(function(edge) {
-      var firstHost = edge["source"].split('-')[0];
-      var secondHost = edge["target"].split('-')[0];
-      var portNameFirstHost = edge["source"]+"-"+edge["target"];
-      var portNameSecondHost = edge["target"]+"-"+edge["source"];
-      var configSource ;
-      var configTarget;
-     
-     listPorts.forEach(function(port) {
-        if(port["data"].name == edge["source"]){
       
-          configSource = port.data;
-          startContainers = startContainers + "sudo nsenter -t $PID"+firstHost+" -n ip addr add " + configSource.ip + " dev " +portNameFirstHost + " \n";
-          startContainers = startContainers + "sudo nsenter -t $PID"+firstHost+" -n ip link set dev "+portNameFirstHost +" address " + configSource.mac + " \n";
-          startContainers = startContainers + "sudo nsenter -t $PID"+firstHost+" -n ip link set "+portNameFirstHost +" up \n";
-          
-          //sudo nsenter -t $PIDSW1 -n ip link set veth1 up
-        }
-        if(port["data"].name == edge["target"]){
-          
-          configSource = port.data;
-          startContainers = startContainers + "sudo nsenter -t $PID"+secondHost+" -n ip addr add " + configSource.ip + " dev " +portNameSecondHost + " \n";
-          startContainers = startContainers + "sudo nsenter -t $PID"+secondHost+" -n ip link set dev "+portNameSecondHost +" address " + configSource.mac + " \n";
-          startContainers = startContainers + "sudo nsenter -t $PID"+secondHost+" -n ip link set "+portNameSecondHost +" up \n";
-        }
-        
-      
-    
 
+      startContainers = startContainers + "sudo nsenter -t $PID"+edge.parentSource+" -n ip addr add " + edge.sourceIp + " dev " +edge.source+"-"+edge.target + " \n";
+      startContainers = startContainers + "sudo nsenter -t $PID"+edge.parentSource+" -n ip link set dev "+edge.source+"-"+edge.target +" address " + edge.sourceMac + " \n";
+      startContainers = startContainers + "sudo nsenter -t $PID"+edge.parentSource+" -n ip link set "+edge.source+"-"+edge.target + " up \n";
+     
+      startContainers = startContainers + "sudo nsenter -t $PID"+edge.parentTarget+" -n ip addr add " + edge.targetIp + " dev " +edge.target+"-"+edge.source + " \n";
+      startContainers = startContainers + "sudo nsenter -t $PID"+edge.parentTarget+" -n ip link set dev "+edge.target+"-"+edge.source +" address " + edge.targetMac + " \n";
+      startContainers = startContainers + "sudo nsenter -t $PID"+edge.parentTarget+" -n ip link set "+edge.target+"-"+edge.source +" up \n";
       
-     } );
      
       
 
@@ -1012,27 +1013,25 @@ function displayCyData() {
     startContainers = startContainers + "# Altere estas linhas pare definir suas rotas da maneira que desejar \n" ;
     edges.forEach(function(edge) {
       //"docker exec h1 route add default gw ip-sw-port"
-      if(edge.customEdge){
+      
        
         var parentSource = cy.$( `node[name="${edge.parentSource}"]`);
+        
         var parentTarget = cy.$( `node[name="${edge.parentTarget}"]`);
+        
         var command = "";
-        console.log("Completo")
-       console.log(edge);
-       console.log("Acesso direto")
-       console.log(edge.parentTarget);
-       console.log("Acesso com aspas")
-       console.log(edge["parentTarget"])
+      
         if(parentSource[0]["_private"]["data"]["type"] == "Switch"){
+        
           command = "docker exec "+edge.parentTarget+" route add default gw "+edge.sourceIp.split('/')[0]; +" \n";
         }
         if(parentTarget[0]["_private"]["data"]["type"]  == "Switch"){
-          
+        
           command =  "docker exec "+edge.parentSource+" route add default gw "+edge.targetIp.split('/')[0]; +" \n";
         }
-        console.log(command);
+        
         startContainers = startContainers + command + "\n "         ;
-      }
+      
       
        
             
@@ -1068,9 +1067,9 @@ function displayCyData() {
       });
       var newPorts = [];
       var switches2 = cy.elements('node[type="Switch"]');
-      console.log("Começando captura")
+      
       switches2.forEach(function(sw) {
-          console.log('Switch:', sw.id());
+      
           
           var childNodes = sw.descendants();
 
@@ -1081,8 +1080,7 @@ function displayCyData() {
           childNodes.forEach(function(childNode) {
               var connectedEdges = cy.edges(`[source = "${childNode.id()}"], [target = "${childNode.id()}"]`);
 
-              console.log("Child Node name")
-              console.log(childNode["_private"]["data"].name)    
+                
               if(connectedEdges.length >0){
                 if(childNode["_private"]["data"].name == connectedEdges[0]["_private"]["data"]["source"]){
                   newPorts.push ( connectedEdges[0]["_private"]["data"]["source"]+"-"+ connectedEdges[0]["_private"]["data"]["target"])
@@ -1158,7 +1156,11 @@ document.getElementById('downloadButton').addEventListener('click', function() {
   const text = document.getElementById('cyDataTextarea').value;
   const blob = new Blob([text], { type: 'text/plain' });
   const anchor = document.createElement('a');
-  anchor.download = 'topology.sh';
+  const projectName = document.getElementById('projectName').value;
+  if(projectName == "" || projectName == null){
+    projectName = "topology";
+  }
+  anchor.download = projectName+'Config.sh';
   anchor.href = window.URL.createObjectURL(blob);
   anchor.click();
   window.URL.revokeObjectURL(anchor.href);
@@ -1169,7 +1171,7 @@ function displayDeleteCode (){
   let edges = cy.edges().map(edge => edge.data());
   let nodes = cy.nodes().map(node => node.data());
   var container = "";
-  console.log(nodes);
+  
   nodes.forEach(function (node){
     if(node.type == "Switch" || node.type == "Host"){
       container = container + ' "'+node.name+'" ';
@@ -1179,7 +1181,7 @@ function displayDeleteCode (){
   var interfaces="";
   
   edges.forEach(function (edge){
-    console.log(edge);
+    
     interfaces = interfaces+ ' "'+edge.source+'-'+edge.target+'" ';
     interfaces = interfaces+ ' "'+edge.target+'-'+edge.source+'" ';
     
@@ -1227,7 +1229,12 @@ document.getElementById('downloadDeleteButton').addEventListener('click', functi
   const text = document.getElementById('deleteData').value;
   const blob = new Blob([text], { type: 'text/plain' });
   const anchor = document.createElement('a');
-  anchor.download = 'cleanTopology.sh';
+  const projectName = document.getElementById('projectName').value;
+  if(projectName == "" || projectName == null){
+    projectName = "topology";
+  }
+  
+  anchor.download = 'clean'+projectName+'.sh';
   anchor.href = window.URL.createObjectURL(blob);
   anchor.click();
   window.URL.revokeObjectURL(anchor.href);

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>info
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -293,11 +293,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exportTopologyModalLabel">Save Topology</h5>
+          <br>
+        
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
+         
           <textarea id="exportedJson" class="form-control" rows="10" readonly></textarea>
         </div>
         <div class="modal-footer">
@@ -323,7 +326,7 @@
           <input type="file" id="importJsonFile" class="mt-2">
         </div>
         <div class="modal-footer">
-          <button id="importJson" class="btn btn-primary">Import JSON</button>
+          <button id="importJson" class="btn btn-primary">Load JSON</button>
         </div>
       </div>
     </div>
@@ -334,13 +337,14 @@
     <div class="modal-dialog" style=" min-width: 400px;">
       <div class="modal-content" style="min-width: 400px;">
         <div class="modal-header" style="min-width: 400px;">
-          <h5 class="modal-title" id="dataDisplayModalLabel">ConfigEnvironment.sh</h5>
+          <h5 class="modal-title" id="dataDisplayModalLabel">Config Environment Script</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body"  style="min-width: 400px;">
-          <textarea id="cyDataTextarea" class="form-control" rows="15" readonly></textarea>
+         
+          <textarea id="cyDataTextarea" class="form-control" rows="15" style="overflow-y: scroll;" readonly></textarea>
         </div>
         <div class="modal-footer" style="min-width: 400px;">
             <button type="button" class="btn btn-secondary" id="copyToClipboardButton">Copy to Clipboard</button>
@@ -355,13 +359,13 @@
     <div class="modal-dialog" style=" min-width: 400px;">
       <div class="modal-content" style="min-width: 400px;">
         <div class="modal-header" style="min-width: 400px;">
-          <h5 class="modal-title" id="dataDeleteModalLabel">DeleteEnvironment.sh</h5>
+          <h5 class="modal-title" id="dataDeleteModalLabel">Environment Cleaner Script</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body"  style="min-width: 400px;">
-          <textarea id="deleteData" class="form-control" rows="15" readonly></textarea>
+          <textarea id="deleteData" class="form-control" rows="15" style="overflow-y: scroll;" readonly></textarea>
         </div>
         <div class="modal-footer" style="min-width: 400px;">
             <button type="button" class="btn btn-secondary" id="copyDeleteToClipboardButton">Copy to Clipboard</button>
@@ -375,6 +379,14 @@
 </div>
     <!-- Área do cytoscape -->
   <div class="container-fluid">
+    <div class="row"> 
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="projectName">Topology Name:<span class="dashicons dashicons-nametag"></span></label>
+          <input type="text" class="form-control" id="projectName" placeholder="Name to save the files" >
+      </div>
+      </div>
+    </div>
     <div class="row">
         <div class="col-md-8">
             <div id="cy" style="width: 100%;min-height: 400px; height: auto;border: 1px black solid; margin-left: 10px;">
