@@ -1,0 +1,341 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "host1",
+          "name": "host1",
+          "type": "Host",
+          "label": "host1: dnredson/net",
+          "image": "dnredson/net"
+        },
+        "position": {
+          "x": -60,
+          "y": -43.07692307692307
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "host1-p1",
+          "name": "host1-p1",
+          "parent": "host1",
+          "ip": "10.0.2.2/24",
+          "mac": "00:00:00:00:02:02",
+          "type": "Port"
+        },
+        "position": {
+          "x": -60,
+          "y": -43.07692307692307
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "host2",
+          "name": "host2",
+          "type": "Host",
+          "label": "host2: dnredson/net",
+          "image": "dnredson/net"
+        },
+        "position": {
+          "x": 174.6153846153846,
+          "y": -46.15384615384616
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "host2-p1",
+          "name": "host2-p1",
+          "parent": "host2",
+          "ip": "10.0.2.2/24",
+          "mac": "00:00:00:00:02:02",
+          "type": "Port"
+        },
+        "position": {
+          "x": 174.6153846153846,
+          "y": -46.15384615384616
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "sw1",
+          "name": "sw1",
+          "type": "Switch",
+          "code": "code.json",
+          "label": "sw1: code.json",
+          "apiPorts": "50001",
+          "p4code": "code.json",
+          "entries": "table_add MyIngress.ipv4_lpm ipv4_forward 10.0.1.2  => 00:00:00:00:01:02 1;table_add MyIngress.ipv4_lpm ipv4_forward 10.0.2.2 =>  00:00:00:00:02:02 2\n"
+        },
+        "position": {
+          "x": 53.65384615384616,
+          "y": -43.84615384615385
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "sw1-p1",
+          "name": "sw1-p1",
+          "parent": "sw1",
+          "ip": "10.0.1.2/24",
+          "mac": "00:00:00:00:01:02",
+          "type": "Port"
+        },
+        "position": {
+          "x": 36.15384615384617,
+          "y": -43.84615384615385
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "sw1-p2",
+          "name": "sw1-p2",
+          "parent": "sw1",
+          "ip": "",
+          "mac": "",
+          "type": "Port"
+        },
+        "position": {
+          "x": 71.15384615384616,
+          "y": -43.84615384615385
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      }
+    ],
+    "edges": [
+      {
+        "data": {
+          "source": "host1-p1",
+          "target": "sw1-p1",
+          "interface": "host1-p1-sw1-p1",
+          "customEdge": false,
+          "delay": "",
+          "bandwidth": "",
+          "parentSource": "host1",
+          "parentTarget": "sw1",
+          "sourceIp": "10.0.1.2/24",
+          "targetIp": "10.0.1.2/24",
+          "sourceMac": "00:00:00:00:01:02",
+          "targetMac": "00:00:00:00:01:02",
+          "id": "615769d4-cc13-44ee-ad3a-6887ae613321"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "source": "host2-p1",
+          "target": "host1-p1",
+          "interface": "host2-p1-host1-p1",
+          "customEdge": false,
+          "delay": "",
+          "bandwidth": "",
+          "parentSource": "host2",
+          "parentTarget": "host1",
+          "sourceIp": "10.0.2.2/24",
+          "targetIp": "10.0.2.2/24",
+          "sourceMac": "00:00:00:00:02:02",
+          "targetMac": "00:00:00:00:02:02",
+          "id": "72adb945-1b40-4909-b2a4-c7d40c8ce6e5"
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "group": "edges",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      }
+    ]
+  },
+  "style": [
+    {
+      "selector": "node",
+      "style": {
+        "label": "data(name)",
+        "color": "rgb(0,0,0)",
+        "font-size": "10px",
+        "text-valign": "center",
+        "text-halign": "center",
+        "text-events": "yes"
+      }
+    },
+    {
+      "selector": "node:parent",
+      "style": {
+        "label": "data(name)",
+        "shape": "roundrectangle",
+        "background-color": "rgb(46,204,64)",
+        "background-opacity": "0.3",
+        "border-color": "rgb(41,128,185)",
+        "border-width": "2px",
+        "text-valign": "top",
+        "padding": "10px"
+      }
+    },
+    {
+      "selector": "$node > node",
+      "style": {}
+    },
+    {
+      "selector": "node:child",
+      "style": {
+        "shape": "rectangle",
+        "background-image": "url(./assets/images/port.png)",
+        "background-fit": "cover",
+        "background-clip": "node",
+        "background-opacity": "0.3"
+      }
+    },
+    {
+      "selector": "node:child",
+      "style": {
+        "shape": "rectangle",
+        "background-image": "url(./assets/images/port.png)",
+        "background-fit": "cover",
+        "background-clip": "node",
+        "background-opacity": "0.3"
+      }
+    },
+    {
+      "selector": "$node > node",
+      "style": {
+        "label": "data(name)",
+        "shape": "roundrectangle",
+        "background-color": "rgb(102,102,102)",
+        "border-color": "rgb(51,51,51)",
+        "border-width": "2px",
+        "width": "20px",
+        "height": "20px",
+        "text-margin-y": "0px",
+        "text-valign": "top",
+        "text-halign": "center"
+      }
+    },
+    {
+      "selector": "node[type = \"Host\"]",
+      "style": {
+        "label": "data(label)",
+        "border-color": "rgb(0,0,255)"
+      }
+    },
+    {
+      "selector": "node[type = \"Port\"]",
+      "style": {
+        "shape": "rectangle",
+        "background-image": "url(./assets/images/port.png)",
+        "background-fit": "cover",
+        "background-clip": "node",
+        "background-opacity": "0.3"
+      }
+    },
+    {
+      "selector": "node[type = \"Switch\"]",
+      "style": {
+        "shape": "rectangle",
+        "label": "data(label)",
+        "border-color": "rgb(0,128,0)"
+      }
+    },
+    {
+      "selector": "node:selected",
+      "style": {
+        "border-color": "rgb(255,0,0)"
+      }
+    },
+    {
+      "selector": "edge",
+      "style": {
+        "width": "2px",
+        "line-color": "rgb(255,0,0)",
+        "target-arrow-color": "rgb(255,0,0)",
+        "target-arrow-shape": "triangle"
+      }
+    }
+  ],
+  "data": {},
+  "zoomingEnabled": true,
+  "userZoomingEnabled": true,
+  "zoom": 1.3,
+  "minZoom": 0.3,
+  "maxZoom": 5,
+  "panningEnabled": true,
+  "userPanningEnabled": true,
+  "pan": {
+    "x": 347.49999999999994,
+    "y": 185.00759054337496
+  },
+  "boxSelectionEnabled": true,
+  "renderer": {
+    "name": "canvas"
+  }
+}
