@@ -315,7 +315,7 @@ const cyStyle = [
           'shape': 'rectangle',
           'label': 'data(label)',
           'border-color': 'green',
-
+          'border-radius': '3px',
           // ... (other styles for Switch nodes) ...
         }
       },
@@ -716,7 +716,7 @@ var targetNodeData = cy.getElementById(targetNode).data();
     if (targetNode ==undefined){
       targetNode= "Not defined";
     }
-    htmlContent = `<div class="bg-red"> ${node.data('id')}</div><div class="rowInfo"> Parent: ${parentId}</div><div class="rowInfo"> Edges: ${sourceNode} to ${sourceNode}</div><div class="rowInfo"> IP: ${node.data('ip')}</div><div class="rowInfo"> MAC: ${node.data('mac')}</div>`;
+    htmlContent = `<div class="bg-secondary" style="padding-left:5px;"><span style="color: white"> ${node.data('id')}</span></div><div class="rowInfo"> Parent: ${parentId}</div><div class="rowInfo"> Edges: ${sourceNode} to ${sourceNode}</div><div class="rowInfo"> IP: ${node.data('ip')}</div><div class="rowInfo"> MAC: ${node.data('mac')}</div>`;
     
   }
 
@@ -728,11 +728,12 @@ function displayEdgeInfo(edge) {
   
   
   var edgeData = edge[0]["_private"]["data"];
-  
+  console.log(edge[0]["_private"]["data"]);
   if(edgeData.customEdge){
-    htmlContent = `<div class="infoTable"><div class="bg-blue">Edge Info</div><div class="rowInfo"> Source: ${edgeData.source} </br> Source IP: ${edgeData.sourceIp}  </div><div class="rowInfo"> Target: ${edgeData.target} </br> Target IP: ${edgeData.targetIp}</div></div>`;
+    htmlContent = `<div class="infoTable" style="padding-left:5px;"><div class="bg-danger" style="color: white;padding-left:5px;">Edge Info</div><div class="rowInfo"> Source: ${edgeData.source} </br> Source IP: ${edgeData.sourceIp}  </div><div class="rowInfo"> Target: ${edgeData.target} </br> Target IP: ${edgeData.targetIp}</div><div class="rowInfo">Delay:${edgeData.delay} </div><div class="rowInfo">Bandwidth:${edgeData.bandwidth} </div></div>`;
+    
   }else{
-    htmlContent = `<div class="infoTable"><div class="bg-blue">Edge Info</div><div class="rowInfo"> Source: ${edgeData.source} </br> Source IP: ${edgeData.sourceIp}  </div><div class="rowInfo"> Target: ${edgeData.target} </br> Target IP: ${edgeData.targetIp}</div><div class="rowInfo">Delay:${edgeData.delay} </div><div class="rowInfo">Bandwidth:${edgeData.bandwidth} </div></div>`;
+    htmlContent = `<div class="infoTable" style="padding-left:5px;"><div class="bg-danger" style="color: white;padding-left:5px;">Edge Info</div><div class="rowInfo"> Source: ${edgeData.source} </br> Source IP: ${edgeData.sourceIp}  </div><div class="rowInfo"> Target: ${edgeData.target} </br> Target IP: ${edgeData.targetIp}</div></div>`;
   }
   
     
@@ -886,7 +887,7 @@ function displayCyData() {
   
      
     //Variáveis com os PIDs de cada elemento
-    startContainers = startContainers+' \n \n echo "Capturando o PID de cada container para adicionar ao namespace"\n '; 
+    startContainers = startContainers+' \n \n echo "Set PID for each container "\n '; 
     listNodes.forEach(function(node) {
      startContainers = startContainers + "PID"+node.name +"=$(docker inspect -f '{{.State.Pid}}' "+node.name+") \n";
 
@@ -900,11 +901,11 @@ function displayCyData() {
     
 
      // Cria os VETH peers
-     startContainers = startContainers+'\n \n echo "Crianco VETH Peers"\n '; 
+     startContainers = startContainers+'\n \n echo "Creating VETH Peers"\n '; 
       edges.forEach(function(edge) {
       startContainers = startContainers + "sudo ip link add "+ edge["source"]+"-"+edge["target"]+" type veth peer name "+ edge["target"]+"-"+edge["source"] +" \n";
     });
-    startContainers = startContainers+'\n \n echo "Configurando os Namespaces" \n '; 
+    startContainers = startContainers+'\n \n echo "Set Namespaces" \n '; 
     // Cria os namespaces e atribui para cada container
     var listDelays = [];
     edges.forEach(function(edge) {
@@ -962,7 +963,7 @@ function displayCyData() {
     });
     
     // Configura as interfaces de rede
-    startContainers = startContainers+'\n \n echo "Configurando interfaces de rede" \n '; 
+    startContainers = startContainers+'\n \n echo "Set network interfaces" \n '; 
     edges.forEach(function(edge) {
       
 
@@ -1007,10 +1008,10 @@ function displayCyData() {
       
     }); */
     //Configurar as rotas no switch para utilizarem o switch na mesma rede como gateway
-    startContainers = startContainers+'\n \n echo "Configurando Rota Padrão nos hosts (Valide no código suas rotas desejadas) " \n '; 
-    startContainers = startContainers+'\n \n echo "Por padrão, o código irá configurar o gateway de um host como a porta do switch ao qual está conectado" \n '; 
-    startContainers = startContainers + "# Por padrão, o código irá configurar o gateway de um host como a porta do switch ao qual está conectado \n"
-    startContainers = startContainers + "# Altere estas linhas pare definir suas rotas da maneira que desejar \n" ;
+    startContainers = startContainers+'\n \n echo "Setting default route for hosts (Check the code for custom routes) " \n '; 
+    startContainers = startContainers+'\n \n echo "By default, this script will set the host default gateway to the switch interface connected to the host" \n '; 
+    startContainers = startContainers + "#By default, this script will set the host default gateway to the switch interface connected to the host \n"
+    startContainers = startContainers + "#Change this lines to set custon routes \n" ;
     edges.forEach(function(edge) {
       //"docker exec h1 route add default gw ip-sw-port"
       
@@ -1042,13 +1043,16 @@ function displayCyData() {
         
         orderPorts = [];
         listPorts.forEach(function(port){
-        
-          
-            if (sw.name == port["data"].parent ){
+           if (sw.name == port["data"].parent ){
               orderPorts.push(port)
             }
         });
+
         orderPorts.sort((a, b) => a.position.x - b.position.x);
+        console.log("orderPorts")
+        console.log(orderPorts)
+
+
         var switchPorts = [];
         
        orderPorts.forEach(function(port){
@@ -1056,47 +1060,35 @@ function displayCyData() {
           var id = cy.getElementById(edge.id);
           var source =id.source();
           var target = id.target();
-          if(port["data"].name == source["_private"]["data"].name){
-          switchPorts.push(source["_private"]["data"].name+"-"+target["_private"]["data"].name)
+          
+          if(port["data"]["parent"] == source["_private"]["data"].parent ){
+            
+            if(port["data"].name == source["_private"]["data"].name ){
+              switchPorts.push(source["_private"]["data"].name+"-"+target["_private"]["data"].name)
+              }
+              if(port["data"].name == target["_private"]["data"].name ){
+              switchPorts.push(target["_private"]["data"].name+"-"+source["_private"]["data"].name)
+              }
           }
-          if(port["data"].name == target["_private"]["data"].name){
-            switchPorts.push(target["_private"]["data"].name+"-"+source["_private"]["data"].name)
-            }
+          if(port["data"]["parent"] == target["_private"]["data"].parent ){
+            
+            if(port["data"].name == source["_private"]["data"].name ){
+              switchPorts.push(source["_private"]["data"].name+"-"+target["_private"]["data"].name)
+              }
+              if(port["data"].name == target["_private"]["data"].name ){
+              switchPorts.push(target["_private"]["data"].name+"-"+source["_private"]["data"].name)
+              }
+          }
+          
                     
         });
       });
-      var newPorts = [];
-      var switches2 = cy.elements('node[type="Switch"]');
-      
-      switches2.forEach(function(sw) {
-      
-          
-          var childNodes = sw.descendants();
-
-          // Ordena os nós filhos com base na posição x
-          childNodes = childNodes.sort((a, b) => a.position().x - b.position().x);
+    
   
-          
-          childNodes.forEach(function(childNode) {
-              var connectedEdges = cy.edges(`[source = "${childNode.id()}"], [target = "${childNode.id()}"]`);
-
-                
-              if(connectedEdges.length >0){
-                if(childNode["_private"]["data"].name == connectedEdges[0]["_private"]["data"]["source"]){
-                  newPorts.push ( connectedEdges[0]["_private"]["data"]["source"]+"-"+ connectedEdges[0]["_private"]["data"]["target"])
-                }
-                if(childNode["_private"]["data"].name == connectedEdges[0]["_private"]["data"]["target"]){
-                  newPorts.push ( connectedEdges[0]["_private"]["data"]["target"]+"-"+ connectedEdges[0]["_private"]["data"]["source"])
-                }
-              }
-              
-              //console.log(connectedEdges[0]["_private"]["data"]["source"])
-              
-          });
-      });
       
         var portsConfig = "";
-        newPorts.forEach(function(port,index){
+        switchPorts.forEach(function(port,index){
+          console.log(port)
           var i = parseInt(index);
           i = i +1;
           portsConfig = portsConfig +" -i "+ i+ "@" + port;
@@ -1107,6 +1099,12 @@ function displayCyData() {
         startContainers = startContainers +"docker exec "+sw.name +" sh -c 'nohup simple_switch  --thrift-port "+sw.port+" "+portsConfig+" "+sw.code +" --log-console >> /tmp/switch.log &' \n";
         
         sw.entries.split(";").forEach(function(command){
+          
+          var lastChar = command.substr(command.length - 1)
+          
+          if(lastChar == "\n"){
+            command = command.substr(0, command.length -1)
+          }
         if(command !=""){
           
         
@@ -1124,6 +1122,11 @@ function displayCyData() {
           });
 
         }
+        switchPorts = [];
+        portsConfig ="";
+        orderPorts = [];
+
+
     });
 
     //docker exec sw1 sh -c 'nohup simple_switch  --thrift-port 50001 -i 1@veth1 -i 2@veth3  standard.json &'
