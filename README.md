@@ -1,7 +1,8 @@
                                              
 
 The P4D-GUI is a tool that allows the creation of P4 testbeds using Docker hosts with a BMV2 P4 switch executed in Docker.
-
+Documentation and How To are available at
+https://dnredsons-organization.gitbook.io/p4d-gui/
 
 Requisites:
   - Ubuntu/Debian 18 or superior
@@ -38,3 +39,8 @@ Execution:
      sudo node app.js
 
   Open the GUI at localhost:3000 with your browser
+
+You can also Download the .ova image with the complete environment already configured
+The default user and password for the image is "p4d"
+https://drive.google.com/file/d/1BU-LGeaMMpN9443RQxp0BIy23iCflg3Y/view?usp=sharing
+
