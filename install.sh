@@ -34,8 +34,8 @@ fi
 
 # Clone the project from GitHub
 echo "Cloning project from GitHub"
-git clone https://github.com/dnredson/P4D-GUI
-cd P4D-GUI
+git clone https://github.com/dnredson/P4Docker
+cd P4Docker
 
 # Installl dependencies from package.json
 echo "Installing dependencies"
@@ -55,4 +55,4 @@ docker run -itd --name compiler -v shared:/codes --workdir /codes dnredson/p4c
 #docker volume create portainer_data
 #docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
 
-echo 'P4D Configuration Complete'
+echo 'P4Docker Configuration Complete'
