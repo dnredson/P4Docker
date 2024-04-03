@@ -989,7 +989,8 @@ function displayCyData() {
       
       startContainers = startContainers + "docker exec "+firstHost+" ip link set " + portNameFirstHost +" promisc on \n"
       startContainers = startContainers + "docker exec "+secondHost+" ip link set " + portNameSecondHost +" promisc on \n"
-
+      startContainers = startContainers + "docker exec "+ firstHost +" ethtool -K "+ portNameFirstHost + "tx off tx off \n";
+      startContainers = startContainers + "docker exec "+ secondHost +" ethtool -K "+ portNameSecondHost + "tx off tx off \n";
       
     });
     // Configura caso haja TCP Offloading ativo
