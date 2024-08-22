@@ -1,4 +1,4 @@
-                                             
+Main Article about P4Docker: https://sol.sbc.org.br/index.php/sbrc_estendido/article/view/29948                                             
 
 The P4D-GUI is a tool that allows the creation of P4 testbeds using Docker hosts with a BMV2 P4 switch executed in Docker.
 Documentation and How To are available at
