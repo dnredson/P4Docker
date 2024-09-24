@@ -1140,15 +1140,21 @@ function displayCyData() {
     //docker exec sw1 sh -c 'echo "table_add MyIngress.ipv4_lpm ipv4_forward 10.0.2.2 =>  00:00:00:00:02:02 2" | simple_switch_CLI --thrift-port 50001'
   
   
-  document.getElementById('cyDataTextarea').value = startContainers;
-  $('#dataDisplayModal').modal('show');
+  //document.getElementById('cyDataTextarea').value = startContainers;
+  //$('#dataDisplayModal').modal('show');
+  return startContainers;
 
 }
 
 
 
-document.getElementById('generateCode').addEventListener('click', displayCyData);
+document.getElementById('generateCode').addEventListener('click', constructDeployCode);
 
+function constructDeployCode(){
+  code = displayCyData();
+  document.getElementById('cyDataTextarea').value = code;
+  $('#dataDisplayModal').modal('show');
+}
 // code to download 
 document.getElementById('copyToClipboardButton').addEventListener('click', function() {
   const textArea = document.getElementById('cyDataTextarea');
@@ -1215,13 +1221,16 @@ function displayDeleteCode (){
   
 
 
-  document.getElementById('deleteData').value = scriptLimpeza;
-  $('#dataDeleteModal').modal('show');
+  return scriptLimpeza;
 }
 
-document.getElementById('deleteCodeButton').addEventListener('click', displayDeleteCode);
+document.getElementById('deleteCodeButton').addEventListener('click', generateDeleteCode);
 
-
+function generateDeleteCode(){
+  document.getElementById('deleteData').value = displayDeleteCode();
+  $('#dataDeleteModal').modal('show');
+  
+}
 // code to download 
 document.getElementById('copyDeleteToClipboardButton').addEventListener('click', function() {
   const textArea = document.getElementById('deleteData');
@@ -1234,8 +1243,10 @@ document.getElementById('downloadDeleteButton').addEventListener('click', functi
   const blob = new Blob([text], { type: 'text/plain' });
   const anchor = document.createElement('a');
   const projectName = document.getElementById('projectName').value;
+  console.log("Actual Value = ");
+  console.log(projectName);
   if(projectName == "" || projectName == null){
-    projectName = "topology";
+    projectName.value = "topology";
   }
   
   anchor.download = 'clean'+projectName+'.sh';
@@ -1287,6 +1298,46 @@ function validateForm(formId) {
   }
   return true;
 }
+
+document.getElementById('deployButton').addEventListener('click', function() {
+  // Obter o nome do projeto
+  let projectName = document.getElementById('projectName').value;
+  if (projectName === "" || projectName === null) {
+    projectName = "topology";
+  }
+
+  // Obter os JSONs
+  const deployCode = displayCyData(); // Gera o código de deploy
+  const deleteCode = displayDeleteCode();   // Gera o código de limpeza
+  const topologyJson = JSON.stringify(cy.json(), null, 2); // Obter o grafo em formato JSON
+
+  // Cria o objeto de dados para enviar ao backend
+  const data = {
+    projectName: projectName,
+    deployCode: deployCode,
+    deleteCode: deleteCode,
+    topologyJson: topologyJson
+  };
+
+  // Enviar os dados ao backend para salvar os arquivos
+  fetch('/save-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (response.ok) {
+      // Redirecionar para a página de projetos
+      window.location.href = "/projectsdeploy";
+    } else {
+      console.log(response)
+      console.error('Erro ao salvar os arquivos.');
+    }
+  })
+  .catch(error => console.error('Erro:', error));
+});
 
 });
 

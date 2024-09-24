@@ -1,0 +1,170 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "h3",
+          "name": "h3",
+          "type": "Host",
+          "label": "h3: dnredson/mqtt",
+          "image": "dnredson/mqtt"
+        },
+        "position": {
+          "x": 10,
+          "y": 20
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "h3-p1",
+          "name": "h3-p1",
+          "parent": "h3",
+          "ip": "",
+          "mac": "",
+          "type": "Port"
+        },
+        "position": {
+          "x": 10,
+          "y": 20
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": false,
+        "classes": ""
+      }
+    ]
+  },
+  "style": [
+    {
+      "selector": "node",
+      "style": {
+        "label": "data(name)",
+        "color": "rgb(0,0,0)",
+        "font-size": "10px",
+        "text-valign": "center",
+        "text-halign": "center",
+        "text-events": "yes"
+      }
+    },
+    {
+      "selector": "node:parent",
+      "style": {
+        "label": "data(name)",
+        "shape": "roundrectangle",
+        "background-color": "rgb(46,204,64)",
+        "background-opacity": "0.3",
+        "border-color": "rgb(41,128,185)",
+        "border-width": "2px",
+        "text-valign": "top",
+        "padding": "10px"
+      }
+    },
+    {
+      "selector": "$node > node",
+      "style": {}
+    },
+    {
+      "selector": "node:child",
+      "style": {
+        "shape": "rectangle",
+        "background-image": "url(./assets/images/port.png)",
+        "background-fit": "cover",
+        "background-clip": "node",
+        "background-opacity": "0.3"
+      }
+    },
+    {
+      "selector": "node:child",
+      "style": {
+        "shape": "rectangle",
+        "background-image": "url(./assets/images/port.png)",
+        "background-fit": "cover",
+        "background-clip": "node",
+        "background-opacity": "0.3"
+      }
+    },
+    {
+      "selector": "$node > node",
+      "style": {
+        "label": "data(name)",
+        "shape": "roundrectangle",
+        "background-color": "rgb(102,102,102)",
+        "border-color": "rgb(51,51,51)",
+        "border-width": "2px",
+        "width": "20px",
+        "height": "20px",
+        "text-margin-y": "0px",
+        "text-valign": "top",
+        "text-halign": "center"
+      }
+    },
+    {
+      "selector": "node[type = \"Host\"]",
+      "style": {
+        "label": "data(label)",
+        "border-color": "rgb(0,0,255)"
+      }
+    },
+    {
+      "selector": "node[type = \"Port\"]",
+      "style": {
+        "shape": "rectangle",
+        "background-image": "url(./assets/images/port.png)",
+        "background-fit": "cover",
+        "background-clip": "node",
+        "background-opacity": "0.3"
+      }
+    },
+    {
+      "selector": "node[type = \"Switch\"]",
+      "style": {
+        "shape": "rectangle",
+        "label": "data(label)",
+        "border-color": "rgb(0,128,0)"
+      }
+    },
+    {
+      "selector": "node:selected",
+      "style": {
+        "border-color": "rgb(255,0,0)"
+      }
+    },
+    {
+      "selector": "edge",
+      "style": {
+        "width": "2px",
+        "line-color": "rgb(255,0,0)",
+        "target-arrow-color": "rgb(255,0,0)",
+        "target-arrow-shape": "triangle"
+      }
+    }
+  ],
+  "data": {},
+  "zoomingEnabled": true,
+  "userZoomingEnabled": true,
+  "zoom": 1.3,
+  "minZoom": 0.3,
+  "maxZoom": 5,
+  "panningEnabled": true,
+  "userPanningEnabled": true,
+  "pan": {
+    "x": 410.5,
+    "y": 180.15
+  },
+  "boxSelectionEnabled": true,
+  "renderer": {
+    "name": "canvas"
+  }
+}
