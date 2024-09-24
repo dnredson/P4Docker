@@ -342,53 +342,65 @@ function loadJson()  {
 
     // Função para fazer o deploy do projeto
     $('#deployProjectButton').on('click', function () {
-      const projectName = $('#projectSelect').val();
-      fetch('/deploy-project', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ projectName: projectName })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.text();
-        } else {
-          throw new Error('Erro ao fazer o deploy');
-        }
-      })
-      .then(message => {
-        alert(message);
-      })
-      .catch(error => {
-        alert('Erro ao fazer o deploy: ' + error.message);
-      });
-    });
+  const projectName = $('#projectSelect').val();
+  
+  // Exibe o GIF de loading
+  $('body').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Carregando...</div>');
+  
+  fetch('/deploy-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ projectName: projectName })
+  })
+  .then(response => {
+    $('#loading').remove(); // Remove o GIF de carregamento
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error('Erro ao fazer o deploy');
+    }
+  })
+  .then(message => {
+    alert(message);
+  })
+  .catch(error => {
+    $('#loading').remove(); // Remove o GIF de carregamento em caso de erro
+    alert('Erro ao fazer o deploy: ' + error.message);
+  });
+});
 
     // Função para limpar o projeto
     $('#cleanProjectButton').on('click', function () {
-      const projectName = $('#projectSelect').val();
-      fetch('/clean-project', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ projectName: projectName })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.text();
-        } else {
-          throw new Error('Erro ao limpar o ambiente');
-        }
-      })
-      .then(message => {
-        alert(message);
-      })
-      .catch(error => {
-        alert('Erro ao limpar o ambiente: ' + error.message);
-      });
-    });
+  const projectName = $('#projectSelect').val();
+  
+  // Exibe o GIF de loading
+  $('body').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Carregando...</div>');
+  
+  fetch('/clean-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ projectName: projectName })
+  })
+  .then(response => {
+    $('#loading').remove(); // Remove o GIF de carregamento
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error('Erro ao limpar o ambiente');
+    }
+  })
+  .then(message => {
+    alert(message);
+  })
+  .catch(error => {
+    $('#loading').remove(); // Remove o GIF de carregamento em caso de erro
+    alert('Erro ao limpar o ambiente: ' + error.message);
+  });
+});
 
     
     });
