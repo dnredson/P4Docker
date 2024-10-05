@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terminal</title>
+    <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
+    <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #terminal {
+        width: 80%;
+        height: 80%;
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="terminal"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const terminal = new Terminal();
+        terminal.open(document.getElementById("terminal"));
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const containerName = urlParams.get("name");
+        const ws = new WebSocket(
+          `ws://localhost:3000/terminal?name=${containerName}`
+        );
+
+        ws.onopen = function () {
+          terminal.write(
+            "Connected to the container: " + containerName + "\r\n"
+          );
+        };
+
+        ws.onmessage = function (event) {
+          terminal.write(event.data);
+        };
+
+        terminal.onData(function (input) {
+          ws.send(input);
+        });
+
+        ws.onclose = function () {
+          terminal.write("\r\nConnection closed");
+        };
+      });
+    </script>
+  </body>
+</html>

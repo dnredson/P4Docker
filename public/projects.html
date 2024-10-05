@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P4Docker</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+ <style>
+  #loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fundo escuro com 80% de transparência */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Garante que o carregamento fique acima de outros elementos */
+}
+
+#loading img {
+  width: 300px; /* Tamanho do GIF de carregamento */
+  height: 300px;
+}
+ </style>
+ <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-info">
+    <a class="navbar-brand title" href="#">
+      <img src="./assets/images/logo.png" width="50" height="50" alt="">
+      P4Docker
+    </a>
+    <button class="navbar-toggler item" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon item"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item item">
+          <a class="nav-link item" href="/">Home </a>
+        </li>
+        <li class="nav-item item">
+          <a class="nav-link item" href="/compiler">Compiler</a>
+        </li>
+        <li class="nav-item item"></li>
+          <a class="nav-link item" href="/projectsdeploy">Projects</a>
+        </li>
+        <li class="nav-item item">
+          <a class="nav-link item" href="https://dnredsons-organization.gitbook.io/p4docker" target="_blank">Help <i class="fa-regular fa-circle-question"></i></a>
+        </li>
+       
+       
+      </ul>
+    </div>
+  </nav>
+  <!-- Alert container -->
+<div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+
+    <!-- Área do cytoscape -->
+  <div class="container-fluid">
+
+
+    <div class="container mt-4">
+      <h2>Projects</h2>
+      <div class="form-group">
+        <label for="projectSelect">Select a Project:</label>
+        <select id="projectSelect" class="form-control">
+          <option value="teste">teste</option>
+          <!-- Você pode adicionar manualmente outros projetos aqui -->
+        </select>
+      </div>
+      <button id="loadProjectButton" class="btn btn-primary">Load Project</button>
+      <button id="deployProjectButton" class="btn btn-success">Deploy Project</button>
+      <button id="cleanProjectButton" class="btn btn-danger">Clean Project</button>
+    </div>
+    
+    </div>
+    <div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div id="cy" style="width: 100%;min-height: 400px; height: auto;border: 1px black solid; margin-left: 10px;">
+                <button id="zoomInButton">+</button>
+                <button id="zoomOutButton">-</button>
+              </div>
+              
+        </div>
+        <div class="col-md-4" id=>
+          <div class="row">Options:</div>
+          <div class="row"><div id="options">
+              <!-- aqui são listadas as opções para gerenciamento -->
+          </div>
+        </div>
+          <div class="row">
+            Info:
+            <div id="info-box" class="info-box"></div>
+          </div>  
+          
+        </div>
+    </div>
+</div>
+
+  </div>
+  
+ 
+
+    <!-- Área do cytoscape -->
+  <div style="padding: 20px">
+
+</div>
+  <footer class="bg-info text-center text-lg-start footer">
+    <div class="text-center p-3">
+     PROFISSA © 2024
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+  <script src="./assets/js/script.js"></script>
+  
+    
+  <script>
+    let cy;  // Definir a variável 'cy' fora para ser reutilizada.
+  
+    $(document).ready(function () {
+      // Carregar o arquivo JSON do projeto selecionado ao clicar no botão
+      $('#loadProjectButton').on('click', loadJson);
+      function loadProjects() {
+    fetch('/list-projects')
+      .then(response => response.json())
+      .then(data => {
+        const projectSelect = $('#projectSelect');
+        projectSelect.empty(); // Limpa o select antes de adicionar novas opções
+
+        // Adiciona uma opção para cada projeto
+        data.forEach(project => {
+          projectSelect.append(`<option value="${project}">${project}</option>`);
+        });
+      })
+      .catch(err => {
+        alert('Erro ao carregar projetos');
+      });
+  }
+  loadProjects();
+function loadJson()  {
+        const projectName = $('#projectSelect').val();
+        const jsonPath = `/projects/${projectName}/topology.json`; // Caminho para o arquivo JSON
+  
+        // Carregar o arquivo JSON do projeto selecionado
+        fetch(jsonPath)
+          .then(response => response.json())
+          .then(data => {
+            if (cy) {
+              // Se 'cy' já existe, atualize os dados JSON
+              cy.json(data);
+            } else {
+              // Se 'cy' não foi inicializado, inicialize-o
+              cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: data.elements,  // Carregar os elementos do JSON
+                style: [
+                  {
+                    selector: 'node',
+                    style: {
+                      'label': 'data(name)',
+                      'background-color': '#666',
+                      'text-valign': 'center',
+                      'text-halign': 'center'
+                    }
+                  },
+                  {
+                    selector: 'edge',
+                    style: {
+                      'width': 3,
+                      'line-color': '#ccc',
+                      'target-arrow-color': '#ccc',
+                      'target-arrow-shape': 'triangle'
+                    }
+                  }
+                ],
+                layout: {
+                  name: 'grid',
+                  rows: 1
+                }
+              });
+              cy.on('select', 'node', function (event) {
+              const selectedNode = event.target;
+              updateOptions(selectedNode);
+              displayNodeInfo(selectedNode); 
+            });
+            }
+  
+            // Aplicar formatação personalizada aos nós 'Port'
+            cy.nodes().forEach(node => {
+              
+              if (node.data('type') === 'Port') {
+                node.style({
+                  'label':node.data('name'),
+                  'background-image': 'url(./assets/images/port.png)',
+                  'background-fit': 'cover',
+                  'shape': 'rectangle',
+                  'background-opacity': '0.3',
+                  'background-clip': 'node'
+                });
+              }
+              if (node.data('type') === 'Host' || node.data('type') === 'Switch') {
+                node.style({
+                  'label':node.data('name'),
+                 
+                });
+                checkDockerStatus(node.data('name'), node); 
+              }
+            });
+  
+            // Aplicar um estilo adicional ou personalizado, se necessário
+            const cyStyle = [
+              // Estilos adicionais podem ser definidos aqui
+            ];
+            cy.style(cyStyle).update();
+  
+          })
+          .catch(() => alert('Failed to load project JSON.'));
+      }
+      function checkDockerStatus(containerName, node) {
+      // Simulação de chamada ao backend para verificar se o container está rodando
+      fetch(`/check-container-status?name=${containerName}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.isRunning) {
+            // Se o container está rodando, muda o fundo para verde
+            node.style('background-color', '#45da86');
+          } else {
+            // Se o container não está rodando, muda o fundo para vermelho
+            node.style('background-color', '#d58b7b');
+          }
+        })
+        .catch(() => {
+          // Em caso de erro na requisição, define o fundo como vermelho
+          node.style('background-color', 'grey');
+        });
+    }
+    function displayNodeInfo(node) {
+  var infoBox = document.getElementById('info-box');
+  var htmlContent = '';
+
+  if (node.isParent()) {
+    var type = node.data('type');
+    var children = node.children();
+    var childrenInfo = children.map(child => {
+      return `Id: ${child.data('name')} <br> IP: ${child.data('ip')}<br> MAC: ${child.data('mac')}`;
+    }).join('<br>');
+
+    if (type === 'Host') {
+      htmlContent = `<div class="infoTable"><div class="bg-blue"> ${node.data('name')}</div><div class="rowInfo"> Image: ${node.data('image')}</div><div class="rowInfo">Ports: <br> ${childrenInfo}</div></div>`;
+    } else if (type === 'Switch') {
+      htmlContent = `<div class="infoTable"><div class="bg-green"> ${node.data('name')}</div><div class="rowInfo">P4 Code: ${node.data('p4code')}</div><div class="rowInfo">Entries: ${node.data('entries')}</div><div class="rowInfo">API Ports: ${node.data('apiPorts')}</div><div class="rowInfo">${childrenInfo}</div></div>`;
+    }
+  } else {
+    var parentId = node.parent().data('id');
+    var connectedEdges = node.connectedEdges().map(edge => edge.id()).join(', ');
+
+    htmlContent = `<div class="bg-secondary" style="padding-left:5px;"><span style="color: white"> ${node.data('id')}</span></div><div class="rowInfo"> Parent: ${parentId}</div><div class="rowInfo"> Edges: ${connectedEdges}</div><div class="rowInfo"> IP: ${node.data('ip')}</div><div class="rowInfo"> MAC: ${node.data('mac')}</div>`;
+  }
+
+  infoBox.innerHTML = htmlContent;  // Exibe o conteúdo no info-box
+}
+    function updateOptions(node) {
+      const nodeColor = node.style('background-color');
+      const nodeName = node.data('name');
+      console.log("Node Color")
+      console.log(node.style('background-color'));
+      // Limpa a div de opções
+      $('#options').empty();
+
+      // Verifica a cor do nó e atualiza as opções
+      if (nodeColor === 'rgb(69,218,134)') { // Verde (#45da86)
+        console.log("É verde!")
+        $('#options').append(`
+          <p>Node: ${nodeName}</p>
+          <button id="connectButton" class="btn btn-success">Connect</button>
+          
+          
+        `);
+        $('#connectButton').on('click', function () {
+          console.log("Conectando")
+          openTerminal(nodeName);
+        });
+        
+      } else if (nodeColor === 'rgb(213,139,123)') { // Vermelho (#d58b7b)
+        console.log("É vermelho!")
+        $('#options').append(`
+          <p>Node: ${nodeName}</p>
+          <button id="startButton" class="btn btn-primary">Start</button>
+        `);
+        $('#startButton').on('click', function () {
+          startContainer(nodeName, projectName);
+        });
+      
+      }
+    }
+    
+    function startContainer(containerName, projectName) {
+      console.log("Starting")
+      // Exibe um GIF de carregamento
+      $('#options').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Cadeirando.. digo.. Carregando...</div>');
+      // Envia o comando para iniciar o container
+      fetch(`/start-container?name=${containerName}`, { method: 'POST' })
+        .then(response => {
+          if (response.ok) {
+            // Aguarda 5 segundos (mostrando o GIF de loading)
+            setTimeout(() => {
+              $('#loading').remove(); // Remove o GIF de carregamento
+              loadProject(projectName); 
+              loadJson();// Recarrega o projeto
+            }, 3000);
+          } else {
+            alert('Erro ao iniciar o container.');
+          }
+        })
+        .catch(() => {
+          $('#loading').remove(); // Remove o GIF de carregamento
+          alert('Erro ao iniciar o container.');
+        });
+    }
+      // Função para abrir o terminal em uma nova janela
+     
+      function openTerminal(containerName) {
+  const terminalUrl = `/terminal.html?name=${containerName}`;
+  window.open(terminalUrl, '_blank');
+}
+
+    // Função para fazer o deploy do projeto
+    $('#deployProjectButton').on('click', function () {
+  const projectName = $('#projectSelect').val();
+  
+  // Exibe o GIF de loading
+  $('body').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Carregando...</div>');
+  
+  fetch('/deploy-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ projectName: projectName })
+  })
+  .then(response => {
+    $('#loading').remove(); // Remove o GIF de carregamento
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error('Erro ao fazer o deploy');
+    }
+  })
+  .then(message => {
+    alert(message);
+  })
+  .catch(error => {
+    $('#loading').remove(); // Remove o GIF de carregamento em caso de erro
+    alert('Erro ao fazer o deploy: ' + error.message);
+  });
+});
+
+    // Função para limpar o projeto
+    $('#cleanProjectButton').on('click', function () {
+  const projectName = $('#projectSelect').val();
+  
+  // Exibe o GIF de loading
+  $('body').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Carregando...</div>');
+  
+  fetch('/clean-project', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ projectName: projectName })
+  })
+  .then(response => {
+    $('#loading').remove(); // Remove o GIF de carregamento
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error('Erro ao limpar o ambiente');
+    }
+  })
+  .then(message => {
+    alert(message);
+  })
+  .catch(error => {
+    $('#loading').remove(); // Remove o GIF de carregamento em caso de erro
+    alert('Erro ao limpar o ambiente: ' + error.message);
+  });
+});
+
+    
+    });
+    
+    
+  </script>
+ 
+</body>
+</html>
+

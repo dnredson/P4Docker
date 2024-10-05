@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P4D</title>
+  <title>P4Docker</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/style.css">
@@ -17,7 +17,7 @@
   <nav class="navbar navbar-expand-lg bg-info">
     <a class="navbar-brand title" href="#">
       <img src="./assets/images/logo.png" width="50" height="50" alt="">
-      P4D
+      P4Docker
     </a>
     <button class="navbar-toggler item" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon item"></span>
@@ -30,9 +30,13 @@
         <li class="nav-item item">
           <a class="nav-link item" href="/compiler">Compiler</a>
         </li>
-        <li class="nav-item item">
-          <a class="nav-link item" href="/compiler">Help <i class="fa-regular fa-circle-question"></i></a>
+        <li class="nav-item item"></li>
+          <a class="nav-link item" href="/projectsdeploy">Projects</a>
         </li>
+        <li class="nav-item item">
+          <a class="nav-link item" href="https://dnredsons-organization.gitbook.io/p4docker" target="_blank">Help <i class="fa-regular fa-circle-question"></i></a>
+        </li>
+       
        
        
       </ul>
@@ -49,6 +53,7 @@
     <button id="removeNode" class="btn btn-primary">Remove Node</button>
     <button id="removeEdge" class="btn btn-primary">Remove Edge</button>
     <button id="editNodeButton" class="btn btn-primary" disabled>Edit Selected Node</button>
+    <button id="deployButton" class="btn btn-danger">Deploy</button>
     
 
     <!-- Instância dos modais-->
@@ -409,6 +414,7 @@
   <button id="exportTopology" class="btn btn-primary">Save Topology</button>
   <button id="generateCode" class="btn btn-primary">Generate Code</button>
   <button id="deleteCodeButton" class="btn btn-primary">Generate Cleaner Code</button>
+
 </div>
   <footer class="bg-info text-center text-lg-start footer">
     <div class="text-center p-3">
