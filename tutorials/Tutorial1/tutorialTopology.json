@@ -27,8 +27,8 @@
           "id": "host1-p1",
           "name": "host1-p1",
           "parent": "host1",
-          "ip": "10.0.2.2/24",
-          "mac": "00:00:00:00:02:02",
+          "ip": "10.0.1.2/24",
+          "mac": "00:00:00:00:01:02",
           "type": "Port"
         },
         "position": {
@@ -96,15 +96,15 @@
           "label": "sw1: code.json",
           "apiPorts": "50001",
           "p4code": "code.json",
-          "entries": "table_add MyIngress.ipv4_lpm ipv4_forward 10.0.1.2  => 00:00:00:00:01:02 1;table_add MyIngress.ipv4_lpm ipv4_forward 10.0.2.2 =>  00:00:00:00:02:02 2\n"
+          "entries": "table_add MyIngress.ipv4_lpm ipv4_forward 10.0.1.2/32  => 00:00:00:00:01:02 1;table_add MyIngress.ipv4_lpm ipv4_forward 10.0.2.2/32 =>  00:00:00:00:02:02 2"
         },
         "position": {
-          "x": 53.65384615384616,
-          "y": -43.84615384615385
+          "x": 47.5,
+          "y": -110.76923076923075
         },
         "group": "nodes",
         "removed": false,
-        "selected": false,
+        "selected": true,
         "selectable": true,
         "locked": false,
         "grabbable": true,
@@ -116,13 +116,13 @@
           "id": "sw1-p1",
           "name": "sw1-p1",
           "parent": "sw1",
-          "ip": "10.0.1.2/24",
-          "mac": "00:00:00:00:01:02",
+          "ip": "10.0.1.1/24",
+          "mac": "00:00:00:00:01:01",
           "type": "Port"
         },
         "position": {
-          "x": 36.15384615384617,
-          "y": -43.84615384615385
+          "x": 30.000000000000007,
+          "y": -110.76923076923075
         },
         "group": "nodes",
         "removed": false,
@@ -138,13 +138,13 @@
           "id": "sw1-p2",
           "name": "sw1-p2",
           "parent": "sw1",
-          "ip": "",
-          "mac": "",
+          "ip": "10.0.2.1/24",
+          "mac": "00:00:00:00:02:01",
           "type": "Port"
         },
         "position": {
-          "x": 71.15384615384616,
-          "y": -43.84615384615385
+          "x": 64.99999999999999,
+          "y": -110.76923076923075
         },
         "group": "nodes",
         "removed": false,
@@ -159,19 +159,19 @@
     "edges": [
       {
         "data": {
-          "source": "host1-p1",
-          "target": "sw1-p1",
-          "interface": "host1-p1-sw1-p1",
+          "source": "sw1-p2",
+          "target": "host2-p1",
+          "interface": "sw1-p2-host2-p1",
           "customEdge": false,
           "delay": "",
           "bandwidth": "",
-          "parentSource": "host1",
-          "parentTarget": "sw1",
-          "sourceIp": "10.0.1.2/24",
-          "targetIp": "10.0.1.2/24",
-          "sourceMac": "00:00:00:00:01:02",
-          "targetMac": "00:00:00:00:01:02",
-          "id": "615769d4-cc13-44ee-ad3a-6887ae613321"
+          "parentSource": "sw1",
+          "parentTarget": "host2",
+          "sourceIp": "10.0.2.1/24",
+          "targetIp": "10.0.2.2/24",
+          "sourceMac": "00:00:00:00:02:01",
+          "targetMac": "00:00:00:00:02:02",
+          "id": "f548c36d-67ad-435f-b721-fa2086e9440f"
         },
         "position": {
           "x": 0,
@@ -188,19 +188,19 @@
       },
       {
         "data": {
-          "source": "host2-p1",
-          "target": "host1-p1",
-          "interface": "host2-p1-host1-p1",
+          "source": "host1-p1",
+          "target": "sw1-p1",
+          "interface": "host1-p1-sw1-p1",
           "customEdge": false,
           "delay": "",
           "bandwidth": "",
-          "parentSource": "host2",
-          "parentTarget": "host1",
-          "sourceIp": "10.0.2.2/24",
-          "targetIp": "10.0.2.2/24",
-          "sourceMac": "00:00:00:00:02:02",
-          "targetMac": "00:00:00:00:02:02",
-          "id": "72adb945-1b40-4909-b2a4-c7d40c8ce6e5"
+          "parentSource": "host1",
+          "parentTarget": "sw1",
+          "sourceIp": "10.0.1.2/24",
+          "targetIp": "10.0.1.1/24",
+          "sourceMac": "00:00:00:00:01:02",
+          "targetMac": "00:00:00:00:01:01",
+          "id": "a8b0b57d-b2ec-4d38-bdfc-a85ddd2588b4"
         },
         "position": {
           "x": 0,
@@ -331,8 +331,8 @@
   "panningEnabled": true,
   "userPanningEnabled": true,
   "pan": {
-    "x": 347.49999999999994,
-    "y": 185.00759054337496
+    "x": 218.5,
+    "y": 306.15
   },
   "boxSelectionEnabled": true,
   "renderer": {
