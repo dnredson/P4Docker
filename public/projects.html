@@ -313,7 +313,7 @@ function loadJson()  {
     function startContainer(containerName, projectName) {
       console.log("Starting")
       // Exibe um GIF de carregamento
-      $('#options').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Cadeirando.. digo.. Carregando...</div>');
+      $('#options').append('<div id="loading"><img src="/assets/images/ZKZg.gif" alt="Loading...">Cadeirando.. digo.. Carregando...</div>');
       // Envia o comando para iniciar o container
       fetch(`/start-container?name=${containerName}`, { method: 'POST' })
         .then(response => {
@@ -345,7 +345,7 @@ function loadJson()  {
   const projectName = $('#projectSelect').val();
   
   // Exibe o GIF de loading
-  $('body').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Carregando...</div>');
+  $('body').append('<div id="loading"><img src="/assets/images/ZKZg.gif" alt="Loading...">Carregando...</div>');
   
   fetch('/deploy-project', {
     method: 'POST',
@@ -376,7 +376,7 @@ function loadJson()  {
   const projectName = $('#projectSelect').val();
   
   // Exibe o GIF de loading
-  $('body').append('<div id="loading"><img src="/assets/images/loading.gif" alt="Loading...">Carregando...</div>');
+  $('body').append('<div id="loading"><img src="/assets/images/ZKZg.gif" alt="Loading...">Carregando...</div>');
   
   fetch('/clean-project', {
     method: 'POST',
