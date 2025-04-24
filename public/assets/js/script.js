@@ -986,11 +986,19 @@ function displayCyData() {
       var secondHost = edge["target"].split('-')[0];
       var portNameFirstHost = edge["source"]+"-"+edge["target"];
       var portNameSecondHost = edge["target"]+"-"+edge["source"];
+
+      var parentFirstHost = cy.$( `node[name="${edge.parentSource}"]`);
+      var parentSecondHost = cy.$( `node[name="${edge.parentTarget}"]`);
       
-      startContainers = startContainers + "docker exec "+firstHost+" ip link set " + portNameFirstHost +" promisc on \n"
-      startContainers = startContainers + "docker exec "+secondHost+" ip link set " + portNameSecondHost +" promisc on \n"
-      startContainers = startContainers + "docker exec "+ firstHost +" ethtool -K "+ portNameFirstHost + "tx off tx off \n";
-      startContainers = startContainers + "docker exec "+ secondHost +" ethtool -K "+ portNameSecondHost + "tx off tx off \n";
+      if(parentFirstHost[0]["_private"]["data"]["type"] == "Host"){
+	startContainers = startContainers + "docker exec "+firstHost+" ip link set " + portNameFirstHost +" promisc on \n"
+	startContainers = startContainers + "docker exec "+ firstHost +" ethtool -K "+ portNameFirstHost + " tx off tx off \n";
+      }
+
+      if(parentSecondHost[0]["_private"]["data"]["type"] == "Host"){
+	startContainers = startContainers + "docker exec "+secondHost+" ip link set " + portNameSecondHost +" promisc on \n"
+	startContainers = startContainers + "docker exec "+ secondHost +" ethtool -K "+ portNameSecondHost + " tx off tx off \n";
+      }
       
     });
     // Configura caso haja TCP Offloading ativo
