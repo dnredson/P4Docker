@@ -126,9 +126,9 @@ control MyIngress(inout headers hdr,
 
          if (hdr.ipv4.isValid()){
             ipv4_lpm.apply();
-              if (hdr.ethernet.dstAddr == 0x000000000101) {
+              if (hdr.ethernet.dstAddr == 0x000000000102) {
         
-             ipv4_forward(0x000000000101, 1);
+             ipv4_forward(0x000000000102, 1);
         
         } else if (hdr.ethernet.dstAddr == 0x000000000202) {
         
