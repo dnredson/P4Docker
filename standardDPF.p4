@@ -1,3 +1,4 @@
+1
 /* -*- P4_16 -*- */
 #include <core.p4>
 #include <v1model.p4>
@@ -126,15 +127,13 @@ control MyIngress(inout headers hdr,
 
          if (hdr.ipv4.isValid()){
             ipv4_lpm.apply();
-              if (hdr.ethernet.dstAddr == 0x000000000102) {
-        
-             ipv4_forward(0x000000000102, 1);
-        
-        } else if (hdr.ethernet.dstAddr == 0x000000000202) {
-        
-             ipv4_forward(0x000000000202, 2);
+            
         }
-        }
+  	if (hdr.ipv4.dstAddr == 0x0a000102) {
+	    ipv4_forward(0x000000000102, 1);
+	} else if (hdr.ipv4.dstAddr == 0x0a000202) {
+  	  ipv4_forward(0x000000000202, 2);
+	}
     }
 }
 
